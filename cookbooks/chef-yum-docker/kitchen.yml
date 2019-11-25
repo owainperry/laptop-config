@@ -1,0 +1,19 @@
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  deprecations_as_errors: true
+  chef_license: accept-no-persist
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-6
+  - name: centos-7
+  - name: fedora-26
+
+suites:
+  - name: default
+    run_list: test::default
