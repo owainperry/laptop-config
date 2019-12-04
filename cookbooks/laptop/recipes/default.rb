@@ -169,3 +169,37 @@ end
 package '/home/operry/chef-cache/zoom_x86_64.rpm' do 
   action :install
 end  
+
+
+remote_file '/home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip' do
+  source 'https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+execute '/home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip' do
+  command 'unzip /home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip && mv terraform /usr/local/bin/terraform && chmod 755 /usr/local/bin/terraform '
+  cwd '/home/operry/chef-cache'
+  not_if { File.exists?("/usr/local/bin/terraform") }
+end
+
+
+remote_file '/home/operry/chef-cache/awscli-bundle.zip' do
+  source 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+execute '/home/operry/chef-cache/awscli-bundle.zip' do
+  command 'unzip /home/operry/chef-cache/awscli-bundle.zip && sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws '
+  cwd '/home/operry/chef-cache'
+  not_if { File.exists?("/usr/local/bin/aws") }
+end
+
+
+
+

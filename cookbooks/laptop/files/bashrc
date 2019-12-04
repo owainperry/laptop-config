@@ -21,3 +21,5 @@ export PATH
 source <(kubectl completion bash)
 export PATH=$PATH:/usr/local/go/bin:/home/operry/bin
 export GOPATH="/home/operry/git/go"
+
+source /home/operry/profile/aws.sh
