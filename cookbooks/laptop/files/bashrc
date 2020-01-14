@@ -6,9 +6,9 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+if ! [[ "$PATH" =~ "$HOME/git/go/bin:$HOME/.local/bin:$HOME/bin:" ]]
 then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+    PATH="$HOME/git/go/bin:$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
 
@@ -22,4 +22,6 @@ source <(kubectl completion bash)
 export PATH=$PATH:/usr/local/go/bin:/home/operry/bin
 export GOPATH="/home/operry/git/go"
 
-source /home/operry/profile/aws.sh
+#source /home/operry/profile/aws.sh
+source /home/operry/.alias
+

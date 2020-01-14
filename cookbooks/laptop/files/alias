@@ -1,0 +1,3 @@
+alias aws-login='source ~/bin/aws-login-source'
+alias github-login='source ~/bin/github-source'
+alias fluxsync='fluxctl --k8s-fwd-ns=flux sync'

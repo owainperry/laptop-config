@@ -1,5 +1,40 @@
 abort 'This cookbook is only usable with Fedora' unless node['platform'] == 'fedora'
 
+#Ruby 
+packages =  ["jq","gcc-c++","patch","readline","readline-devel","zlib","zlib-devel","libyaml-devel","libffi-devel","openssl-devel","make","bzip2","autoconf","automake","libtool","bison","sqlite-devel"]
+package packages do
+  action :install
+end 
+
+
+
+remote_file '/home/operry/chef-cache/rvm-installer' do
+  source 'https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer'
+  owner 'operry'
+  group 'operry'
+  mode '0750'
+  action :create
+end
+
+execute 'setup rvm gpg 1 ' do 
+  command 'curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -  '
+  cwd '/usr/local'
+  not_if { File.exists?("/etc/profile.d/rvm.sh") }
+end
+  
+execute 'setup rvm gpg 2' do 
+  command 'curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - '
+  cwd '/usr/local'
+  not_if { File.exists?("/etc/profile.d/rvm.sh") }
+end
+
+execute 'setup rvm' do 
+  command 'cat /home/operry/chef-cache/rvm-installer | bash -s stable  '
+  cwd '/usr/local'
+  not_if { File.exists?("/etc/profile.d/rvm.sh") }
+end
+
+
 directory '/home/operry/chef-cache' do 
   owner 'operry'
   group 'operry'
@@ -59,21 +94,6 @@ remote_file '/usr/local/bin/kind' do
   action :create
 end
 
-cookbook_file '/home/operry/.bashrc' do
-  source 'bashrc'
-  owner 'operry'
-  group 'operry'
-  mode '0644'
-  action :create
-end
-
-cookbook_file '/home/operry/.bash_profile' do
-  source 'bash_profile'
-  owner 'operry'
-  group 'operry'
-  mode '0644'
-  action :create
-end
 
 ### golang 
 
@@ -171,16 +191,16 @@ package '/home/operry/chef-cache/zoom_x86_64.rpm' do
 end  
 
 
-remote_file '/home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip' do
-  source 'https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip'
+remote_file '/home/operry/chef-cache/terraform_0.12.18_linux_amd64.zip' do
+  source 'https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip'
   owner 'operry'
   group 'operry'
   mode '0644'
   action :create
 end
 
-execute '/home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip' do
-  command 'unzip /home/operry/chef-cache/terraform_0.12.16_linux_amd64.zip && mv terraform /usr/local/bin/terraform && chmod 755 /usr/local/bin/terraform '
+execute '/home/operry/chef-cache/terraform_0.12.18_linux_amd64.zip' do
+  command 'unzip /home/operry/chef-cache/terraform_0.12.18_linux_amd64.zip && mv terraform /usr/local/bin/terraform && chmod 755 /usr/local/bin/terraform '
   cwd '/home/operry/chef-cache'
   not_if { File.exists?("/usr/local/bin/terraform") }
 end
@@ -200,6 +220,71 @@ execute '/home/operry/chef-cache/awscli-bundle.zip' do
   not_if { File.exists?("/usr/local/bin/aws") }
 end
 
+yum_repository 'virtualbox' do
+  description 'virtualbox'
+  baseurl 'http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch'
+  gpgkey 'https://www.virtualbox.org/download/oracle_vbox.asc'
+  action :create
+end
 
+packages = %w(VirtualBox-6.0 binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms qt5-qtx11extras libxkbcommon)
+package packages do
+  action :install
+end 
 
+remote_file '/home/operry/chef-cache/chefdk-4.6.35-1.el7.x86_64.rpm' do
+  source 'https://packages.chef.io/files/stable/chefdk/4.6.35/el/7/chefdk-4.6.35-1.el7.x86_64.rpm'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+package '/home/operry/chef-cache/chefdk-4.6.35-1.el7.x86_64.rpm' do 
+  action :install
+end  
+
+remote_file '/home/operry/chef-cache/vagrant_2.2.6_x86_64.rpm' do
+  source 'https://releases.hashicorp.com/vagrant/2.2.6/vagrant_2.2.6_x86_64.rpm'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+package '/home/operry/chef-cache/vagrant_2.2.6_x86_64.rpm' do 
+  action :install
+end  
+
+package 'openvpn' do 
+  action :install
+end
+
+remote_file '/home/operry/chef-cache/rpmfusion-free-release-31.noarch.rpm' do
+  source 'https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-31.noarch.rpm'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+remote_file '/home/operry/chef-cache/rpmfusion-nonfree-release-31.noarch.rpm' do
+  source 'https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-31.noarch.rpm'
+  owner 'operry'
+  group 'operry'
+  mode '0644'
+  action :create
+end
+
+package '/home/operry/chef-cache/rpmfusion-nonfree-release-31.noarch.rpm' do 
+  action :install
+end
+
+package '/home/operry/chef-cache/rpmfusion-free-release-31.noarch.rpm' do 
+  action :install
+end
+
+package 'ffmpeg' do
+  action :install
+end
 
